@@ -81,18 +81,15 @@ Array extend [
 "Parte 2"
 
 Object subclass: Coleccion [
-   | coleccion |
-]
-
-
-Coleccion extend [
    
+   | coleccion |
+
    inicializar [
       <category:'initialization'>
       coleccion := OrderedCollection new.
    ]
 
-   coleccion [
+   getColeccion [
       <category:'accessing'>
       ^coleccion
    ]
@@ -111,70 +108,63 @@ Coleccion class extend [
 ]
 
 Coleccion subclass: Pila [
-]
 
-Pila extend [
-   
    empilar: elemento [
-      ^(self coleccion) addFirst: elemento
+      ^(super getColeccion) addFirst: elemento
    ]
 
    tope [
-      | tope |
-      tope := (self coleccion) first.
-      ^tope
+      ^(super getColeccion) first
    ] 
 
    desempilar [
-      ^(self coleccion) removeFirst
+      ^(super getColeccion) removeFirst
    ]
 
 ]
+
 
 Pila class extend [
     
    new [
-      | pila |
-      pila := super new.
+      ^(super new)
    ]
 
 ]
 
 Coleccion subclass: Cola [
-]
 
-Cola extend [
-    
+   getCola [
+      ^(super getColeccion)
+   ]
+
    encolar: elemento [
-      ^(self coleccion) addLast: elemento
+      ^(self getCola) addLast: elemento
    ]
 
    proximo [
-      |primero|
-      primero:= (self coleccion) first.
-      ^primero
+      ^(self getCola) first
    ]
 
    desencolar [
-      ^(self coleccion) removeFirst
+      ^(self getCola) removeFirst
    ]
+
+
 
 ]
 
 Cola class extend [
    
    new [
-      | cola |
-      cola := super new.
+      ^(super new)
    ]
 
 ]
 
 Cola subclass: ColaMemoria [
+   
    |desencolados|
-]
-
-ColaMemoria extend [
 
    inicializar [
       <category:'initialization'>
@@ -182,23 +172,22 @@ ColaMemoria extend [
    ]
 
    encolar: elemento [
-      ^super encolar
+      ^(super getCola) addLast: elemento
    ]
 
    proximo [
-      ^super proximo
+      ^(super proximo)
    ]
 
    desencolar [
-      desencolados add: (self proximo).
-      ^super desencolar
+      (self obtenerDesencolados) add: (self proximo).
+      ^(super desencolar)
    ]
 
    obtenerDesencolados [
       <category:'accessing'>
       ^desencolados
    ]
-
 ]
 
 ColaMemoria class extend [
@@ -207,14 +196,14 @@ ColaMemoria class extend [
       | colaMemoria |
       colaMemoria := super new.
       colaMemoria inicializar.
-      ^colaMemoria
+      ^colaMemoria.
    ]
 
 ]
 
 "Main"
 
-|a b c|
+|a b c d e f g h i|
 
 " Declaremos una Lista Ordenada "
 a := OrderedCollection new.
@@ -227,5 +216,55 @@ a printNl.
 b:= a subCollectionFrom: 1 to: 2.
 b printNl.
 
-c := a filter: [:x|x<3].
+c := a filter: [:x|x>9].
 c printNl.
+
+d := Pila new.
+d printNl.
+
+d empilar: 12.
+(d getColeccion) printNl.
+
+d empilar: 25.
+(d getColeccion) printNl.
+
+e := d tope.
+e printNl. 
+
+d desempilar.
+(d getColeccion) printNl.
+
+
+f := Cola new.
+f printNl.
+
+f encolar: 12.
+(f getColeccion) printNl.
+
+f encolar: 25.
+(f getColeccion) printNl.
+
+e := f proximo.
+e printNl. 
+
+f desencolar.
+(f getColeccion) printNl.
+
+
+g := ColaMemoria new.
+g printNl.
+
+g encolar: 10.
+(g getColeccion) printNl.
+
+g encolar: 22.
+(g getColeccion) printNl.
+
+i := g proximo.
+i printNl. 
+
+g desencolar.
+(g getColeccion) printNl.
+
+h := g obtenerDesencolados.
+h printNl.
