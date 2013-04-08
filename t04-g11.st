@@ -5,6 +5,8 @@
 "Parte 1"
 
 OrderedCollection extend [
+   
+   "1."
    subCollectionFrom: begin to: end [
       |subColeccion|
       subColeccion := OrderedCollection new.
@@ -13,7 +15,8 @@ OrderedCollection extend [
          do: [Transcript show: 'Error en la ejecución de subCollectionFrom: ' ].
       ^subColeccion
    ]
-
+   
+   "2."
    filter: condition [
       |filtredCollection|
       filtredCollection:= self select: condition.
@@ -21,21 +24,30 @@ OrderedCollection extend [
    ]
 ]
 
+"3."
 Array extend [
    esCuadradoMagicoNormal [
+      
       |result length magicNumber leftDiagonalSum rightDiagonalSum|
       length:= self size.
+      
+      "Obtención del número mágico."
       magicNumber:= (length*((length*length)+1))/2.
+
+      "Chequeo si el arreglo es cuadrado y si todos sus elementos
+      están comprendidos entre 1 y n²"
       1 to: length do: [:row |
                            |rowList checkRank|
-                           rowList:= self at:row.
-                           checkRank:= rowList detect: [:each | 
-                                                         (1<=each) and: (each<=(length*length))
-                                                      ].
-                           ((rowList size = length) and: checkRank)
+                           rowList := self at:row.
+                           checkRank := rowList select: [:each | 
+                                         (1<=each) and: (each<=(length*length))
+                                         ].
+                           (((rowList size) == length) and: ((checkRank size) == length))
                            ifTrue: [nil]
-                           ifFalse: [^result:= False]
+                           ifFalse: [^result:= false].
                         ].
+      
+      "Chequeo si la suma de los elementos de cada fila es igual al número mágico."
       1 to: length do: [:row |
                            |rowList rowSum|
                            rowList := self at:row.
@@ -45,10 +57,12 @@ Array extend [
                                              rowElement := rowList at:col.
                                              rowSum := rowSum + rowElement. 
                                           ].
-                           (rowSum = magicNumber)
+                           (rowSum == magicNumber)
                            ifTrue: [nil]
-                           ifFalse: [^result:= False]
+                           ifFalse: [^result := false]
                         ].
+      
+      "Chequeo si la suma de los elementos de cada columna es igual al número mágico."
       1 to: length do: [:col |
                            |columnSum|
                            columnSum := 0.
@@ -58,10 +72,12 @@ Array extend [
                                              columnElement := rowList at:col.
                                              columnSum := columnSum + columnElement. 
                                           ].
-                           (columnSum = magicNumber)
+                           (columnSum == magicNumber)
                            ifTrue: [nil]
-                           ifFalse: [^result:= False]
+                           ifFalse: [^result := false]
                         ].
+      
+      "Chequeo si la suma de los elementos de cada diagonal es igual al número mágico."
       leftDiagonalSum := 0.
       rightDiagonalSum := 0.
       1 to: length do: [:row |
@@ -72,9 +88,9 @@ Array extend [
                            leftDiagonalSum := leftDiagonalSum + leftDiagonalElement.
                            rightDiagonalSum := rightDiagonalSum + rightDiagonalElement.
                         ].
-      ((leftDiagonalSum = magicNumber) and: (rightDiagonalSum = magicNumber))
-      ifTrue: [^result := True]
-      ifFalse: [^result:= False]
+      ((leftDiagonalSum == magicNumber) and: (rightDiagonalSum == magicNumber))
+      ifTrue: [^result := true]
+      ifFalse: [^result := false]
    ]
 ]
 
@@ -84,18 +100,28 @@ Object subclass: Coleccion [
    
    | coleccion |
 
+   "Inicializa la Coleccion en cuestion."
    inicializar [
       <category:'initialization'>
       coleccion := OrderedCollection new.
    ]
 
+   " Devuelve la lista que maneja la Coleccion."
    getColeccion [
       <category:'accessing'>
       ^coleccion
    ]
 
+   "Devuelve true si una coleccion es Vacia, falso sino."
+   coleccionVacia [
+      ((self getColeccion) size > 0)
+      ifTrue: [^false]
+      ifFalse: [^true]
+   ]
+
 ]
 
+"Constructor de la clase Coleccion."
 Coleccion class extend [
    
    new [
@@ -114,16 +140,32 @@ Coleccion subclass: Pila [
    ]
 
    tope [
-      ^(super getColeccion) first
+      (super coleccionVacia)
+      ifTrue: [Transcript show: 'Error en función tope: Pila Vacía.'; cr.]
+      ifFalse: [^coleccion first]
    ] 
 
    desempilar [
-      ^(super getColeccion) removeFirst
+      (super coleccionVacia)
+      ifTrue: [Transcript show: 'Error en función desempilar: Pila Vacía.'; cr.]
+      ifFalse: [^(super getColeccion) removeFirst]
+   ]
+
+   desempilarHasta: condicion [
+      (super coleccionVacia)
+      ifTrue: [Transcript show: 'Error en función desempilarHasta: Pila Vacía.'; cr.]
+      ifFalse: [
+                  |primerElemento|
+                  primerElemento := (super getColeccion) detect: condicion.
+                  [self tope ~~ primerElemento] whileTrue: [self desempilar].
+                  ^(super getColeccion)
+               ]
+      
    ]
 
 ]
 
-
+"Constructor de la clase Pila"
 Pila class extend [
     
    new [
@@ -143,17 +185,20 @@ Coleccion subclass: Cola [
    ]
 
    proximo [
-      ^(self getCola) first
+      (super coleccionVacia)
+      ifTrue: [Transcript show: 'Error en función proximo: Cola Vacía.'; cr.]
+      ifFalse: [^(self getCola) first]
    ]
 
    desencolar [
-      ^(self getCola) removeFirst
+      (super coleccionVacia)
+      ifTrue: [Transcript show: 'Error en función desencolar: Cola Vacía.'; cr.]
+      ifFalse:[^(self getCola) removeFirst]
    ]
-
-
 
 ]
 
+"Constructor de la clase Cola"
 Cola class extend [
    
    new [
@@ -176,12 +221,18 @@ Cola subclass: ColaMemoria [
    ]
 
    proximo [
-      ^(super proximo)
+      (super coleccionVacia)
+      ifTrue: [Transcript show: 'Error en función proximo: ColaMemoria Vacía.'; cr.]
+      ifFalse: [^(super proximo)]
    ]
 
    desencolar [
-      (self obtenerDesencolados) add: (self proximo).
-      ^(super desencolar)
+      (super coleccionVacia)
+      ifTrue: [Transcript show: 'Error en función desencolar: ColaMemoria Vacía.'; cr.]
+      ifFalse:[
+               (self obtenerDesencolados) add: (self proximo).
+               ^(super desencolar)
+            ]
    ]
 
    obtenerDesencolados [
@@ -203,7 +254,7 @@ ColaMemoria class extend [
 
 "Main"
 
-|a b c d e f g h i|
+|a b c d e f g h i j arreglo k|
 
 " Declaremos una Lista Ordenada "
 a := OrderedCollection new.
@@ -228,10 +279,19 @@ d empilar: 12.
 d empilar: 25.
 (d getColeccion) printNl.
 
+d empilar: 33.
+(d getColeccion) printNl.
+
+d empilar: 48.
+(d getColeccion) printNl.
+
 e := d tope.
 e printNl. 
 
 d desempilar.
+(d getColeccion) printNl.
+
+d desempilarHasta: [:x|x<25].
 (d getColeccion) printNl.
 
 
