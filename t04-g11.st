@@ -165,7 +165,7 @@ Coleccion subclass: Pila [
 
 ]
 
-"Constructor de la clase Pila"
+"Constructor de la clase Pila."
 Pila class extend [
     
    new [
@@ -177,6 +177,7 @@ Pila class extend [
 Coleccion subclass: Cola [
 
    getCola [
+      <category:'accessing'>
       ^(super getColeccion)
    ]
 
@@ -198,7 +199,7 @@ Coleccion subclass: Cola [
 
 ]
 
-"Constructor de la clase Cola"
+"Constructor de la clase Cola."
 Cola class extend [
    
    new [
@@ -213,11 +214,12 @@ Cola subclass: ColaMemoria [
 
    inicializar [
       <category:'initialization'>
+      super inicializar.
       desencolados := OrderedCollection new.
    ]
 
    encolar: elemento [
-      ^(super getCola) addLast: elemento
+      ^(super encolar: elemento)
    ]
 
    proximo [
@@ -241,6 +243,7 @@ Cola subclass: ColaMemoria [
    ]
 ]
 
+"Constructor de la clase ColaMemoria."
 ColaMemoria class extend [
    
    new [
@@ -251,80 +254,3 @@ ColaMemoria class extend [
    ]
 
 ]
-
-"Main"
-
-|a b c d e f g h i j arreglo k|
-
-" Declaremos una Lista Ordenada "
-a := OrderedCollection new.
-a add: 8.
-a add: 9.
-a add: 10.
-a add: 11.
-a printNl.
-
-b:= a subCollectionFrom: 1 to: 2.
-b printNl.
-
-c := a filter: [:x|x>9].
-c printNl.
-
-d := Pila new.
-d printNl.
-
-d empilar: 12.
-(d getColeccion) printNl.
-
-d empilar: 25.
-(d getColeccion) printNl.
-
-d empilar: 33.
-(d getColeccion) printNl.
-
-d empilar: 48.
-(d getColeccion) printNl.
-
-e := d tope.
-e printNl. 
-
-d desempilar.
-(d getColeccion) printNl.
-
-d desempilarHasta: [:x|x<25].
-(d getColeccion) printNl.
-
-
-f := Cola new.
-f printNl.
-
-f encolar: 12.
-(f getColeccion) printNl.
-
-f encolar: 25.
-(f getColeccion) printNl.
-
-e := f proximo.
-e printNl. 
-
-f desencolar.
-(f getColeccion) printNl.
-
-
-g := ColaMemoria new.
-g printNl.
-
-g encolar: 10.
-(g getColeccion) printNl.
-
-g encolar: 22.
-(g getColeccion) printNl.
-
-i := g proximo.
-i printNl. 
-
-g desencolar.
-(g getColeccion) printNl.
-
-h := g obtenerDesencolados.
-h printNl.
