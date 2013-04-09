@@ -106,7 +106,7 @@ Object subclass: Coleccion [
       coleccion := OrderedCollection new.
    ]
 
-   " Devuelve la lista que maneja la Coleccion."
+   "Devuelve la lista que maneja la Coleccion."
    getColeccion [
       <category:'accessing'>
       ^coleccion
@@ -176,6 +176,7 @@ Pila class extend [
 
 Coleccion subclass: Cola [
 
+   "Obtiene la Coleccion que corresponde a la Cola en cuestion."
    getCola [
       <category:'accessing'>
       ^(super getColeccion)
@@ -212,6 +213,7 @@ Cola subclass: ColaMemoria [
    
    |desencolados|
 
+   "Inicializa la ColaMemoria en cuestion."
    inicializar [
       <category:'initialization'>
       super inicializar.
@@ -237,6 +239,7 @@ Cola subclass: ColaMemoria [
             ]
    ]
 
+   "Obtiene los elementos desencolados previamente de la ColaMemoria original."
    obtenerDesencolados [
       <category:'accessing'>
       ^desencolados
